@@ -10,6 +10,8 @@
 #ifndef DEMO_H
 #define DEMO_H
 
+#include "utm.h"
+
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/access.hpp>
@@ -106,6 +108,7 @@ private:
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
+
 BOOST_SERIALIZATION_ASSUME_ABSTRACT(demo::Base)
 BOOST_CLASS_VERSION( demo::Base, 0 )
 

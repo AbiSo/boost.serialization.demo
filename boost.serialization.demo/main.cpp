@@ -91,10 +91,13 @@ void read_archive( std::istream & in, unsigned int flags)
   using boost::serialization::make_nvp;
   std::unique_ptr<demo::DerivedOne> observer;
   demo::Composite object;
+  demo::utm       utm;
   
   Archive ia(in,flags);
   ia >> make_nvp("observer", observer);
   ia >> make_nvp("obbject", object );
+  ia >> make_nvp("utm", utm);
+  
   std::cout << "observer: " << observer.get() << "\n";
   object.dump(std::cout);
 }
@@ -103,7 +106,8 @@ void read_archive( string filename, unsigned int flags, bool binary )
 try
 {
   std::cout << "# read archive from file " << filename << "\n";
-  std::ifstream ifile(filename);
+  std::ios::openmode mode = binary ? (std::ios::in|std::ios::binary) : std::ios::in;
+  std::ifstream ifile(filename,mode);
   if (binary)
     read_archive<boost::archive::binary_iarchive>(ifile, flags );
   else
@@ -118,13 +122,16 @@ template< typename Archive>
 void write_archive( std::ostream & out, unsigned int flags)
 {
   using boost::serialization::make_nvp;
+  
   auto observer = std::make_unique<demo::DerivedOne>();
   demo::Composite object(2,1);
   object.addObserver(observer.get());
+  demo::utm utm(31,'U',321.123,123.321);
   
   Archive oa(out,flags);
   oa << make_nvp("observer", observer);
   oa << make_nvp("object", object);
+  oa << make_nvp("utm", utm);
   
   std::cout << "observer: " << observer.get() << "\n";
   object.dump(std::cout);
@@ -134,7 +141,8 @@ void write_archive( string filename, unsigned int flags, bool binary )
 try
 {
   std::cout << "# write archive to file " << filename << "\n";
-  std::ofstream ofile(filename);
+  std::ios::openmode mode = binary ? (std::ios::out|std::ios::binary) : std::ios::out;
+  std::ofstream ofile(filename,mode);
   if (binary)
     write_archive<boost::archive::binary_oarchive>(ofile, flags );
   else
