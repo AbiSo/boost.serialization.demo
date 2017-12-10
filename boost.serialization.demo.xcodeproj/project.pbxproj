@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		008E1F8B1FDBF8F400B025A4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008E1F8A1FDBF8F400B025A4 /* main.cpp */; };
+		00E0F5961FDD7F62002F0A9D /* demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E0F5951FDD7F62002F0A9D /* demo.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +28,7 @@
 		008E1F8A1FDBF8F400B025A4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		008E1F921FDC24BE00B025A4 /* demo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
 		00E0F5941FDD54D7002F0A9D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		00E0F5951FDD7F62002F0A9D /* demo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = demo.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			children = (
 				008E1F8A1FDBF8F400B025A4 /* main.cpp */,
 				008E1F921FDC24BE00B025A4 /* demo.h */,
+				00E0F5951FDD7F62002F0A9D /* demo.cpp */,
 			);
 			path = boost.serialization.demo;
 			sourceTree = "<group>";
@@ -123,6 +126,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00E0F5961FDD7F62002F0A9D /* demo.cpp in Sources */,
 				008E1F8B1FDBF8F400B025A4 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
