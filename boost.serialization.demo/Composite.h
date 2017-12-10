@@ -38,18 +38,7 @@ private:
 private:
   friend class boost::serialization::access;
   template <typename Archive>
-  void serialize(Archive & ar, unsigned int version [[maybe_unused]])
-  {
-    // make sure the archive knows the derived object types.
-//    ar.register_type( static_cast< DerivedOne* >(nullptr) );
-//    ar.register_type( static_cast< DerivedTwo* >(nullptr) );
-    
-    // serialize the objects
-    ar & boost::serialization::make_nvp("Objects", mObjects);
-    
-    // serializte the observers
-    ar & boost::serialization::make_nvp("Observers", mObservers);
-  }
+  void serialize(Archive & ar, unsigned int version);
 };
 
 // --------------------------------------------------------------------------------------------------------------------

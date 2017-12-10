@@ -14,7 +14,6 @@
 // ---------------------- my
 #include "Composite.h"
 #include "Derived.h"
-#include "utm.h"
 // ---------------------- boost
 #include <boost/version.hpp>
 #include <boost/format.hpp>
@@ -93,12 +92,10 @@ void read_archive( std::istream & in, unsigned int flags)
   using boost::serialization::make_nvp;
   std::unique_ptr<demo::DerivedOne> observer;
   demo::Composite object;
-  demo::utm       utm;
   
   Archive ia(in,flags);
   ia >> make_nvp("observer", observer);
   ia >> make_nvp("obbject", object );
-  ia >> make_nvp("utm", utm);
   
   std::cout << "observer: " << observer.get() << "\n";
   object.dump(std::cout);
@@ -128,12 +125,10 @@ void write_archive( std::ostream & out, unsigned int flags)
   auto observer = std::make_unique<demo::DerivedOne>();
   demo::Composite object(2,1);
   object.addObserver(observer.get());
-  demo::utm utm(31,'U',321.123,123.321);
   
   Archive oa(out,flags);
   oa << make_nvp("observer", observer);
   oa << make_nvp("object", object);
-  oa << make_nvp("utm", utm);
   
   std::cout << "observer: " << observer.get() << "\n";
   object.dump(std::cout);

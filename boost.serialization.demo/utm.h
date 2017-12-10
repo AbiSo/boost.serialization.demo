@@ -37,10 +37,10 @@ public:
   double       northing() const { return mNorthing; }
   
 private:
-  unsigned int mZone;
-  char         mBand;
-  double       mEasting;
-  double       mNorthing;
+  unsigned int mZone{0};
+  char         mBand{'?'};
+  double       mEasting{0.0};
+  double       mNorthing{0.0};
 };
 
 // required for serialization of "primitive types"

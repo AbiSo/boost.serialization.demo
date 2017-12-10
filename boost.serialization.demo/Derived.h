@@ -10,6 +10,7 @@
 #define DERIVED_H
 
 #include "Base.h"
+#include "utm.h"
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/version.hpp>
@@ -19,7 +20,7 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-template<typename Tag>
+template<typename Tag, typename V>
 class Derived : public Base
 {
 public:
@@ -27,25 +28,21 @@ public:
   ~Derived() = default;
   Derived( Derived const & ) = default;
   Derived & operator = (Derived const &) = default;
-  
+private:
+  V mValue{};
 private:
   friend class boost::serialization::access;
   
   // the required serialization hook
   template <typename Archive>
-  void serialize( Archive & ar, unsigned int version [[maybe_unused]] )
-  {
-    using boost::serialization::make_nvp;
-    using boost::serialization::base_object;
-    ar & make_nvp("base", base_object<Base>(*this) );
-  }
+  void serialize( Archive & ar, unsigned int version );
 };
 
 struct One {};
 struct Two {};
 
-using DerivedOne = Derived<One>;
-using DerivedTwo = Derived<Two>;
+using DerivedOne = Derived<One,int>;
+using DerivedTwo = Derived<Two,utm>;
 
 // --------------------------------------------------------------------------------------------------------------------
 } // demo

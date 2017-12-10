@@ -6,6 +6,11 @@
 //  Copyright © 2017 Abhijit Sovakar. All rights reserved.
 //
 
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+
 #include "Composite.h"
 #include "Derived.h"
 
@@ -42,6 +47,33 @@ void Composite::dump( std::ostream & os )
   os << "observers:\n";
   for_each(mObservers, [&os] ( auto const & object ) { os << "  " << object << "\n"; } );
 }
+
+template<typename Archive>
+void Composite::serialize(Archive & ar, unsigned int version [[maybe_unused]])
+{
+  // make sure the archive knows the derived object types if the derived::serialize variations were
+  // not pre-instantiated.
+  //ar.register_type( static_cast< DerivedOne* >(nullptr) );
+  //ar.register_type( static_cast< DerivedTwo* >(nullptr) );
+  
+  // serialize the objects
+  ar & boost::serialization::make_nvp("Objects", mObjects);
+  
+  // serializte the observers
+  ar & boost::serialization::make_nvp("Observers", mObservers);
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+template
+void Composite::serialize(boost::archive::xml_oarchive & ar, unsigned int version);
+template
+void Composite::serialize(boost::archive::xml_iarchive & ar, unsigned int version);
+
+template
+void Composite::serialize(boost::archive::binary_oarchive & ar, unsigned int version);
+template
+void Composite::serialize(boost::archive::binary_iarchive & ar, unsigned int version);
 
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
