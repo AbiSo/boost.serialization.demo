@@ -9,6 +9,8 @@
 // ---------------------- first archive headers
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 // ---------------------- my
 #include "demo.h"
 // ---------------------- boost
@@ -37,6 +39,7 @@ struct Options
   string Output;
   string Input;
   bool   WithoutHeader;
+  bool   Binary;
 };
 
 Options args(int argc, const char *argv[])
@@ -47,9 +50,10 @@ Options args(int argc, const char *argv[])
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help,h", "produce help message")
-    ("in,i", po::value<string>(&rv.Input)->implicit_value("test.xml"), "read archive from file")
-    ("out,o", po::value<string>(&rv.Output)->implicit_value("test.xml"),  "write archive to this file")
-    ("no-header", "omit archive header information")
+    ("in,i", po::value<string>(&rv.Input), "read archive from file")
+    ("out,o", po::value<string>(&rv.Output),  "write archive to this file")
+    ("no-header,s", "omit archive header information")
+    ("binary,b", "use binary archive instead of xml archive")
   ;
   
 
@@ -67,7 +71,8 @@ Options args(int argc, const char *argv[])
     }
     
     rv.WithoutHeader = vm.count("no-header") > 0;
-    
+    rv.Binary        = vm.count("binary") > 0;
+
   }
   catch( std::exception & x )
   {
@@ -80,22 +85,40 @@ Options args(int argc, const char *argv[])
   return rv;
 }
 
-void read_archive( string filename, unsigned int flags )
+template< typename Archive>
+void read_archive( std::istream & in, unsigned int flags)
+{
+  Archive ia(in,flags);
+}
+
+void read_archive( string filename, unsigned int flags, bool binary )
 try
 {
   std::ifstream ifile(filename);
-  boost::archive::xml_iarchive ia(ifile, flags );
+  if (binary)
+    read_archive<boost::archive::binary_iarchive>(ifile, flags );
+  else
+    read_archive<boost::archive::xml_iarchive>(ifile, flags );
 }
 catch(std::exception & x)
 {
   cerr << "read error: " << filename << ": " << x.what() << "\n";
 }
 
-void write_archive( string filename, unsigned int flags )
+template< typename Archive>
+void write_archive( std::ostream & out, unsigned int flags)
+{
+  Archive oa(out,flags);
+}
+
+void write_archive( string filename, unsigned int flags, bool binary )
 try
 {
   std::ofstream ofile(filename);
-  boost::archive::xml_oarchive oa(ofile, flags );
+  if (binary)
+    write_archive<boost::archive::binary_oarchive>(ofile, flags );
+  else
+    write_archive<boost::archive::xml_oarchive>(ofile, flags );
 }
 catch(std::exception & x)
 {
@@ -114,14 +137,15 @@ try
   cout << msg % "in" % opt.Input  << "\n";
   cout << msg % "out" % opt.Output << "\n";
   cout << msg % "no header" % opt.WithoutHeader << "\n";
-  
+  cout << msg % "binary archive" % opt.Binary << "\n";
+
   // serialize
   unsigned int flags{0};
   if ( opt.WithoutHeader )
     flags |= boost::archive::no_header;
   
-  if ( !opt.Output.empty() ) write_archive( opt.Output, flags );
-  if ( !opt.Input.empty() ) read_archive( opt.Input, flags );
+  if ( !opt.Output.empty() ) write_archive( opt.Output, flags, opt.Binary );
+  if ( !opt.Input.empty() ) read_archive( opt.Input, flags, opt.Binary );
 }
 catch( std::exception & x)
 {
