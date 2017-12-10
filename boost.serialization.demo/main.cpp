@@ -6,25 +6,23 @@
 //  Copyright © 2017 Abhijit Sovakar. All rights reserved.
 //
 
+// ---------------------- first archive headers
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
-
+// ---------------------- my
+#include "demo.h"
+// ---------------------- boost
 #include <boost/version.hpp>
 #include <boost/format.hpp>
-
-#include <boost/serialization/version.hpp>
-#include <boost/serialization/nvp.hpp>
-#include <boost/serialization/access.hpp>
 #include <boost/optional.hpp>
 #include <boost/program_options.hpp>
-
+// ---------------------- C++/STL
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <cstdlib>
 
-#include "mockup.h"
-
+// some short cuts
 using std::pair;
 using std::make_pair;
 using std::string;
@@ -32,25 +30,32 @@ using std::cout;
 using std::cerr;
 using std::clog;
 
-using boost::optional;
 using boost::format;
 
-using optional_arg = optional<string>;
-
-pair<optional_arg,optional_arg> args(int argc, const char *argv[])
+struct Options
 {
+  string Output;
+  string Input;
+  bool   WithoutHeader;
+};
+
+Options args(int argc, const char *argv[])
+{
+  Options rv;
+
   namespace po = boost::program_options;
   po::options_description desc("Allowed options");
   desc.add_options()
-    ("help,h", "product help message")
-    ("in,i", po::value<string>(), "read archive from file")
-    ("out,o", po::value<string>(),  "write archive to this file")
+    ("help,h", "produce help message")
+    ("in,i", po::value<string>(&rv.Input)->implicit_value("test.xml"), "read archive from file")
+    ("out,o", po::value<string>(&rv.Output)->implicit_value("test.xml"),  "write archive to this file")
+    ("no-header", "omit archive header information")
   ;
   
-  po::variables_map vm;
 
   try
   {
+    po::variables_map vm;
     po::store(po::parse_command_line(argc,argv,desc), vm);
     po::notify(vm);
     
@@ -60,6 +65,9 @@ pair<optional_arg,optional_arg> args(int argc, const char *argv[])
       cout << desc << "\n";
       std::exit(EXIT_SUCCESS);
     }
+    
+    rv.WithoutHeader = vm.count("no-header") > 0;
+    
   }
   catch( std::exception & x )
   {
@@ -69,50 +77,54 @@ pair<optional_arg,optional_arg> args(int argc, const char *argv[])
     std::exit(EXIT_FAILURE);
   }
   
-  optional_arg in;
-  optional_arg out;
-  
-  if ( vm.count("in") )
-    in = vm["in"].as<string>();
-  if ( vm.count("out") )
-    out = vm["out"].as<string>();
-  return {in,out};
+  return rv;
 }
 
-void read_archive( string filename )
+void read_archive( string filename, unsigned int flags )
 try
 {
   std::ifstream ifile(filename);
-  boost::archive::xml_iarchive ia(ifile);
+  boost::archive::xml_iarchive ia(ifile, flags );
 }
 catch(std::exception & x)
 {
-  cerr << "error: " << x.what() << "\n";
+  cerr << "read error: " << filename << ": " << x.what() << "\n";
 }
 
-void write_archive( string filename )
+void write_archive( string filename, unsigned int flags )
 try
 {
   std::ofstream ofile(filename);
-  boost::archive::xml_oarchive oa(ofile);
+  boost::archive::xml_oarchive oa(ofile, flags );
 }
 catch(std::exception & x)
 {
-  cerr << "error: " << x.what() << "\n";
+  cerr << "write error: " << filename << ": " << x.what() << "\n";
 }
 
 int main(int argc, const char * argv[])
+try
 {
-  auto [in,out] = args(argc,argv);
+  Options opt = args(argc,argv);
 
   // general info
   format msg("%1$-16s : %2%");
   cout << msg % "c++" % __cplusplus << "\n";
   cout << msg % "boost" % BOOST_VERSION << "\n";
-  cout << msg % "in" % in.get_value_or("")  << "\n";
-  cout << msg % "out" % out.get_value_or("") << "\n";
+  cout << msg % "in" % opt.Input  << "\n";
+  cout << msg % "out" % opt.Output << "\n";
+  cout << msg % "no header" % opt.WithoutHeader << "\n";
   
   // serialize
-  if ( in ) read_archive( in.value() );
-  if ( out ) write_archive( out.value() );
+  unsigned int flags{0};
+  if ( opt.WithoutHeader )
+    flags |= boost::archive::no_header;
+  
+  if ( !opt.Output.empty() ) write_archive( opt.Output, flags );
+  if ( !opt.Input.empty() ) read_archive( opt.Input, flags );
+}
+catch( std::exception & x)
+{
+  cerr << "error: " << x.what() << "\n";
+  return EXIT_FAILURE;
 }
