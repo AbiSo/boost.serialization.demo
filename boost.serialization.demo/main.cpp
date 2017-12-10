@@ -88,12 +88,21 @@ Options args(int argc, const char *argv[])
 template< typename Archive>
 void read_archive( std::istream & in, unsigned int flags)
 {
+  using boost::serialization::make_nvp;
+  std::unique_ptr<demo::DerivedOne> observer;
+  demo::Composite object;
+  
   Archive ia(in,flags);
+  ia >> make_nvp("observer", observer);
+  ia >> make_nvp("obbject", object );
+  std::cout << "observer: " << observer.get() << "\n";
+  object.dump(std::cout);
 }
 
 void read_archive( string filename, unsigned int flags, bool binary )
 try
 {
+  std::cout << "# read archive from file " << filename << "\n";
   std::ifstream ifile(filename);
   if (binary)
     read_archive<boost::archive::binary_iarchive>(ifile, flags );
@@ -108,12 +117,23 @@ catch(std::exception & x)
 template< typename Archive>
 void write_archive( std::ostream & out, unsigned int flags)
 {
+  using boost::serialization::make_nvp;
+  auto observer = std::make_unique<demo::DerivedOne>();
+  demo::Composite object(2,1);
+  object.addObserver(observer.get());
+  
   Archive oa(out,flags);
+  oa << make_nvp("observer", observer);
+  oa << make_nvp("object", object);
+  
+  std::cout << "observer: " << observer.get() << "\n";
+  object.dump(std::cout);
 }
 
 void write_archive( string filename, unsigned int flags, bool binary )
 try
 {
+  std::cout << "# write archive to file " << filename << "\n";
   std::ofstream ofile(filename);
   if (binary)
     write_archive<boost::archive::binary_oarchive>(ofile, flags );
@@ -123,6 +143,7 @@ try
 catch(std::exception & x)
 {
   cerr << "write error: " << filename << ": " << x.what() << "\n";
+  throw;
 }
 
 int main(int argc, const char * argv[])
@@ -146,6 +167,10 @@ try
   
   if ( !opt.Output.empty() ) write_archive( opt.Output, flags, opt.Binary );
   if ( !opt.Input.empty() ) read_archive( opt.Input, flags, opt.Binary );
+}
+catch( boost::archive::archive_exception & )
+{
+  return EXIT_FAILURE;
 }
 catch( std::exception & x)
 {
