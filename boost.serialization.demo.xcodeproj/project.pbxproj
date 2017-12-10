@@ -25,7 +25,7 @@
 /* Begin PBXFileReference section */
 		008E1F871FDBF8F400B025A4 /* boost.serialization.demo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = boost.serialization.demo; sourceTree = BUILT_PRODUCTS_DIR; };
 		008E1F8A1FDBF8F400B025A4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		008E1F921FDC24BE00B025A4 /* mockup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mockup.h; sourceTree = "<group>"; };
+		008E1F921FDC24BE00B025A4 /* demo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				008E1F8A1FDBF8F400B025A4 /* main.cpp */,
-				008E1F921FDC24BE00B025A4 /* mockup.h */,
+				008E1F921FDC24BE00B025A4 /* demo.h */,
 			);
 			path = boost.serialization.demo;
 			sourceTree = "<group>";
