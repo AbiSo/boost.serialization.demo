@@ -12,7 +12,9 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 // ---------------------- my
-#include "demo.h"
+#include "Composite.h"
+#include "Derived.h"
+#include "utm.h"
 // ---------------------- boost
 #include <boost/version.hpp>
 #include <boost/format.hpp>

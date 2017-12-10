@@ -1,80 +1,27 @@
 //
-//  demo.h
+//  Composite.hpp
 //  boost.serialization.demo
 //
-//  Created by Abhijit Sovakar on 09.12.17.
+//  Created by Abhijit Sovakar on 10.12.17.
 //  Copyright © 2017 Abhijit Sovakar. All rights reserved.
 //
 
-#pragma once
-#ifndef DEMO_H
-#define DEMO_H
+#ifndef COMPOSITE_H
+#define COMPOSITE_H
 
-#include "utm.h"
-
-#include <boost/serialization/version.hpp>
-#include <boost/serialization/nvp.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
-#include <boost/serialization/assume_abstract.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/unique_ptr.hpp>
 #include <boost/serialization/export.hpp>
 
 #include <memory>
 #include <vector>
-#include <iosfwd>
 
 // --------------------------------------------------------------------------------------------------------------------
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-class Base
-{
-public:
-  Base() = default;
-  virtual ~Base() = 0;
-  Base( Base const & ) = default;
-  Base & operator = ( Base const & ) = default;
-private:
-  // let boost serialization see your class
-  friend class boost::serialization::access;
+class Base;
   
-  // the required serialization hook
-  template <typename Archive>
-  void serialize( Archive & ar [[maybe_unused]], unsigned int version [[maybe_unused]] )
-  {
-  }
-};
-
-template<typename Tag>
-class Derived : public Base
-{
-public:
-  Derived() = default;
-  ~Derived() = default;
-  Derived( Derived const & ) = default;
-  Derived & operator = (Derived const &) = default;
-  
-private:
-  friend class boost::serialization::access;
-  
-  // the required serialization hook
-  template <typename Archive>
-  void serialize( Archive & ar, unsigned int version [[maybe_unused]] )
-  {
-    using boost::serialization::make_nvp;
-    using boost::serialization::base_object;
-    ar & make_nvp("base", base_object<Base>(*this) );
-  }
-};
-  
-struct One {};
-struct Two {};
-
-using DerivedOne = Derived<One>;
-using DerivedTwo = Derived<Two>;
-
 class Composite
 {
 public:
@@ -94,8 +41,8 @@ private:
   void serialize(Archive & ar, unsigned int version [[maybe_unused]])
   {
     // make sure the archive knows the derived object types.
-    ar.register_type( static_cast< DerivedOne* >(nullptr) );
-    ar.register_type( static_cast< DerivedTwo* >(nullptr) );
+//    ar.register_type( static_cast< DerivedOne* >(nullptr) );
+//    ar.register_type( static_cast< DerivedTwo* >(nullptr) );
     
     // serialize the objects
     ar & boost::serialization::make_nvp("Objects", mObjects);
@@ -104,18 +51,14 @@ private:
     ar & boost::serialization::make_nvp("Observers", mObservers);
   }
 };
-  
+
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
 
-BOOST_SERIALIZATION_ASSUME_ABSTRACT(demo::Base)
-BOOST_CLASS_VERSION( demo::Base, 0 )
-
-BOOST_CLASS_VERSION( demo::DerivedOne, 0 )
-BOOST_CLASS_VERSION( demo::DerivedTwo, 0 )
 BOOST_CLASS_VERSION( demo::Composite, 0 )
+BOOST_CLASS_EXPORT_KEY(demo::Composite)
 
 // --------------------------------------------------------------------------------------------------------------------
-#endif /* DEMO_H */
+#endif /* COMPOSITE_H */
 // ====================================================================================================================
