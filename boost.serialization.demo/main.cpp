@@ -2,9 +2,6 @@
 //  main.cpp
 //  boost.serialization.demo
 //
-//  Created by Abhijit Sovakar on 09.12.17.
-//  Copyright © 2017 Abhijit Sovakar. All rights reserved.
-//
 
 // ---------------------- first archive headers
 #include <boost/archive/xml_iarchive.hpp>
@@ -50,7 +47,7 @@ Options args(int argc, const char *argv[])
   namespace po = boost::program_options;
   po::options_description desc("Allowed options");
   desc.add_options()
-    ("help,h", "produce help message")
+    ("help,h", "this help message")
     ("in,i", po::value<string>(&rv.Input), "read archive from file")
     ("out,o", po::value<string>(&rv.Output),  "write archive to this file")
     ("no-header,s", "omit archive header information")
@@ -158,12 +155,14 @@ try
 
   // general info
   format msg("%1$-16s : %2%");
+  cout << msg % "compiler" % BOOST_COMPILER << "\n";
   cout << msg % "c++" % __cplusplus << "\n";
   cout << msg % "boost" % BOOST_VERSION << "\n";
   cout << msg % "in" % opt.Input  << "\n";
   cout << msg % "out" % opt.Output << "\n";
-  cout << msg % "no header" % opt.WithoutHeader << "\n";
-  cout << msg % "binary archive" % opt.Binary << "\n";
+  cout << std::boolalpha;
+  cout << msg % "no header" % "" << opt.WithoutHeader << "\n";
+  cout << msg % "binary archive" % "" << opt.Binary << "\n";
 
   // serialize
   unsigned int flags{0};

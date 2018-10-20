@@ -2,9 +2,6 @@
 //  Composite.cpp
 //  boost.serialization.demo
 //
-//  Created by Abhijit Sovakar on 10.12.17.
-//  Copyright © 2017 Abhijit Sovakar. All rights reserved.
-//
 
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
