@@ -23,12 +23,15 @@ Composite::Composite(size_t ones, size_t twos)
 {
   do
   {
-    mObjects.emplace_back( new DerivedOne );
+    mObjects.emplace_back( new DerivedOne(static_cast<int>(ones)) );
   } while( --ones );
   do
   {
-    mObjects.emplace_back( new DerivedTwo);
+    mObjects.emplace_back( new DerivedTwo(utm(32,'N',5.5,50.05)));
   } while (--twos );
+  
+  mObjects.emplace_back( new DerivedThree("hello") );
+  
 }
 
 void Composite::addObserver( Base * observer )
@@ -39,14 +42,15 @@ void Composite::addObserver( Base * observer )
 void Composite::dump( std::ostream & os )
 {
   using boost::range::for_each;
-  os << "objects:\n";
-  for_each(mObjects, [&os] ( auto const & object ) { os << "  " << object.get() << "\n"; } );
-  os << "observers:\n";
-  for_each(mObservers, [&os] ( auto const & object ) { os << "  " << object << "\n"; } );
+  os << "composite:\n";
+  os << "  objects:\n";
+  for_each(mObjects, [&os] ( auto && object ) { os << "    " << object.get() << " ["; object->dump(os) << "]\n"; } );
+  os << "  observers:\n";
+  for_each(mObservers, [&os] ( auto && object ) { os << "    " << object  << " ["; object->dump(os) << "]\n"; } );
 }
 
 template<typename Archive>
-void Composite::serialize(Archive & ar, unsigned int version [[maybe_unused]])
+void Composite::serialize(Archive & ar, [[maybe_unused]] unsigned int version)
 {
   // make sure the archive knows the derived object types if the derived::serialize variations were
   // not pre-instantiated.

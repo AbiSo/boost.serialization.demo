@@ -26,6 +26,7 @@ void Derived<Tag,V>::serialize( Archive & ar, unsigned int version [[maybe_unuse
 
 // --------------------------------------------------------------------------------------------------------------------
 
+#if 0
 template
 void DerivedOne::serialize(boost::archive::xml_oarchive & ar, unsigned int version);
 template
@@ -36,7 +37,6 @@ void DerivedOne::serialize(boost::archive::binary_oarchive & ar, unsigned int ve
 template
 void DerivedOne::serialize(boost::archive::binary_iarchive & ar, unsigned int version);
 
-#if 0
 template
 void DerivedTwo::serialize(boost::archive::xml_oarchive & ar, unsigned int version);
 template
@@ -53,4 +53,5 @@ void DerivedTwo::serialize(boost::archive::binary_iarchive & ar, unsigned int ve
 // --------------------------------------------------------------------------------------------------------------------
 BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedOne)
 BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedTwo)
+BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedThree)
 // ====================================================================================================================

@@ -13,6 +13,8 @@
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/base_object.hpp>
 
+#include <iostream>
+
 // --------------------------------------------------------------------------------------------------------------------
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
@@ -22,9 +24,17 @@ class Derived : public Base
 {
 public:
   Derived() = default;
+  Derived( V v ) : mValue(v) {}
   ~Derived() = default;
   Derived( Derived const & ) = default;
   Derived & operator = (Derived const &) = default;
+  
+  std::ostream & dump( std::ostream & out ) const override
+  {
+    out << "value: " << mValue;
+    return out;
+  }
+  
 private:
   V mValue{};
 private:
@@ -37,9 +47,11 @@ private:
 
 struct One {};
 struct Two {};
-
-using DerivedOne = Derived<One,int>;
-using DerivedTwo = Derived<Two,utm>;
+struct Three {};
+  
+using DerivedOne   = Derived<One,int>;
+using DerivedTwo   = Derived<Two,utm>;
+using DerivedThree = Derived<Three,std::string>;
 
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
@@ -47,9 +59,11 @@ using DerivedTwo = Derived<Two,utm>;
 
 BOOST_CLASS_VERSION( demo::DerivedOne, 0 )
 BOOST_CLASS_VERSION( demo::DerivedTwo, 0 )
+BOOST_CLASS_VERSION( demo::DerivedThree, 0 )
 
 BOOST_CLASS_EXPORT_KEY(demo::DerivedOne)
 BOOST_CLASS_EXPORT_KEY(demo::DerivedTwo)
+BOOST_CLASS_EXPORT_KEY(demo::DerivedThree)
 
 // --------------------------------------------------------------------------------------------------------------------
 #endif /* DERIVED_H */

@@ -8,6 +8,7 @@
 
 #include <iosfwd>
 
+#include <boost/serialization/version.hpp>
 #include <boost/serialization/level.hpp>
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -34,10 +35,10 @@ public:
   double       northing() const { return mNorthing; }
   
 private:
-  unsigned int mZone{0};
-  char         mBand{'?'};
-  double       mEasting{0.0};
-  double       mNorthing{0.0};
+  unsigned int mZone{32};
+  char         mBand{'N'};
+  double       mEasting{1.0};
+  double       mNorthing{0.1};
 };
 
 // required for serialization of "primitive types"
@@ -49,6 +50,8 @@ std::istream & operator >> ( std::istream & is, utm & v );
 // --------------------------------------------------------------------------------------------------------------------
 }
 // --------------------------------------------------------------------------------------------------------------------
+
+BOOST_CLASS_VERSION(demo::utm,0);
 
 // elminate serialization overhead at the cost of
 // never being able to increase the version.

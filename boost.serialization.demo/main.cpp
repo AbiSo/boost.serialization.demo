@@ -87,14 +87,14 @@ template< typename Archive>
 void read_archive( std::istream & in, unsigned int flags)
 {
   using boost::serialization::make_nvp;
-  std::unique_ptr<demo::DerivedOne> observer;
+  std::unique_ptr<demo::DerivedThree> observer;
   demo::Composite object;
   
   Archive ia(in,flags);
   ia >> make_nvp("observer", observer);
-  ia >> make_nvp("obbject", object );
+  ia >> make_nvp("object", object );
   
-  std::cout << "observer: " << observer.get() << "\n";
+  std::cout << "observer: " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
   object.dump(std::cout);
 }
 
@@ -119,7 +119,7 @@ void write_archive( std::ostream & out, unsigned int flags)
 {
   using boost::serialization::make_nvp;
   
-  auto observer = std::make_unique<demo::DerivedOne>();
+  auto observer = std::make_unique<demo::DerivedThree>("observer");
   demo::Composite object(2,1);
   object.addObserver(observer.get());
   
@@ -127,7 +127,7 @@ void write_archive( std::ostream & out, unsigned int flags)
   oa << make_nvp("observer", observer);
   oa << make_nvp("object", object);
   
-  std::cout << "observer: " << observer.get() << "\n";
+  std::cout << "observer: " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
   object.dump(std::cout);
 }
 

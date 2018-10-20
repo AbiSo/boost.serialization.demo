@@ -12,6 +12,8 @@
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/export.hpp>
 
+#include <iosfwd>
+
 // --------------------------------------------------------------------------------------------------------------------
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
@@ -23,6 +25,9 @@ public:
   virtual ~Base() = 0;
   Base( Base const & ) = default;
   Base & operator = ( Base const & ) = default;
+  
+  virtual std::ostream & dump( std::ostream & out ) const = 0;
+  
 private:
   // let boost serialization see your class
   friend class boost::serialization::access;
