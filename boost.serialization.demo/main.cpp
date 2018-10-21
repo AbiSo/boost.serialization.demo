@@ -16,6 +16,7 @@
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
 #include <boost/program_options.hpp>
+#include <boost/serialization/unique_ptr.hpp>
 // ---------------------- C++/STL
 #include <fstream>
 #include <iostream>
@@ -120,7 +121,7 @@ void write_archive( std::ostream & out, unsigned int flags)
   using boost::serialization::make_nvp;
   
   auto observer = std::make_unique<demo::DerivedThree>("observer");
-  demo::Composite object(2,1);
+  demo::Composite object(1,1,2,3);
   object.addObserver(observer.get());
   
   Archive oa(out,flags);
@@ -154,7 +155,7 @@ try
   Options opt = args(argc,argv);
 
   // general info
-  format msg("%1$-16s : %2%");
+  format msg("%1$-18s: %2%");
   cout << msg % "compiler" % BOOST_COMPILER << "\n";
   cout << msg % "c++" % __cplusplus << "\n";
   cout << msg % "boost" % BOOST_VERSION << "\n";
@@ -163,7 +164,7 @@ try
   cout << std::boolalpha;
   cout << msg % "no header" % "" << opt.WithoutHeader << "\n";
   cout << msg % "binary archive" % "" << opt.Binary << "\n";
-
+  cout << msg % "composite version" % demo::CompositeVersion << "\n";
   // serialize
   unsigned int flags{0};
   if ( opt.WithoutHeader )

@@ -10,6 +10,9 @@
 
 #include "Derived.h"
 
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/nvp.hpp>
+
 // --------------------------------------------------------------------------------------------------------------------
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
@@ -51,7 +54,10 @@ void DerivedTwo::serialize(boost::archive::binary_iarchive & ar, unsigned int ve
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
+// register classes otherwise "unregistered class" exception:
+// "unregistered class - derived class not registered or exported"
 BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedOne)
 BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedTwo)
 BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedThree)
+BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedFour)
 // ====================================================================================================================

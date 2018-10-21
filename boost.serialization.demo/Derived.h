@@ -9,10 +9,7 @@
 #include "Base.h"
 #include "utm.h"
 
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/version.hpp>
-#include <boost/serialization/base_object.hpp>
-
+#include <boost/format.hpp>
 #include <iostream>
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -31,7 +28,7 @@ public:
   
   std::ostream & dump( std::ostream & out ) const override
   {
-    out << "value: " << mValue;
+    out << boost::format("%1$-8s value: %2%") % Tag::name() % mValue;
     return out;
   }
   
@@ -45,25 +42,29 @@ private:
   void serialize( Archive & ar, unsigned int version );
 };
 
-struct One {};
-struct Two {};
-struct Three {};
-  
+struct One { static const char *name() { return "primus"; } };
+struct Two { static const char *name() { return "secundus"; } };
+struct Three { static const char *name() { return "tertius"; } };
+struct Four { static const char *name() { return "quartus"; } };
+
 using DerivedOne   = Derived<One,int>;
 using DerivedTwo   = Derived<Two,utm>;
 using DerivedThree = Derived<Three,std::string>;
+using DerivedFour  = Derived<Four,int>;
 
-// --------------------------------------------------------------------------------------------------------------------
+  // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
 
 BOOST_CLASS_VERSION( demo::DerivedOne, 0 )
 BOOST_CLASS_VERSION( demo::DerivedTwo, 0 )
 BOOST_CLASS_VERSION( demo::DerivedThree, 0 )
+BOOST_CLASS_VERSION( demo::DerivedFour, 0 )
 
 BOOST_CLASS_EXPORT_KEY(demo::DerivedOne)
 BOOST_CLASS_EXPORT_KEY(demo::DerivedTwo)
 BOOST_CLASS_EXPORT_KEY(demo::DerivedThree)
+BOOST_CLASS_EXPORT_KEY(demo::DerivedFour)
 
 // --------------------------------------------------------------------------------------------------------------------
 #endif /* DERIVED_H */

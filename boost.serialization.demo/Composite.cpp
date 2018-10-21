@@ -11,6 +11,10 @@
 #include "Composite.h"
 #include "Derived.h"
 
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/unique_ptr.hpp>
+#include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/nvp.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 
 #include <iostream>
@@ -19,7 +23,7 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-Composite::Composite(size_t ones, size_t twos)
+Composite::Composite(size_t ones, size_t twos, size_t threes, size_t fours)
 {
   do
   {
@@ -27,11 +31,17 @@ Composite::Composite(size_t ones, size_t twos)
   } while( --ones );
   do
   {
-    mObjects.emplace_back( new DerivedTwo(utm(32,'N',5.5,50.05)));
+    mObjects.emplace_back( new DerivedTwo(utm(32,'N',5.5 + twos,50.05-twos)));
   } while (--twos );
-  
-  mObjects.emplace_back( new DerivedThree("hello") );
-  
+  std::vector<const char*> digit{"zero", "uno", "dos", "tres" };
+  do
+  {
+    mObjects.emplace_back( new DerivedThree( digit[threes % 4]) );
+  } while( --threes );
+  do
+  {
+    mObjects.emplace_back( new DerivedFour(static_cast<int>(fours)));
+  } while (--fours);
 }
 
 void Composite::addObserver( Base * observer )
@@ -47,6 +57,7 @@ void Composite::dump( std::ostream & os )
   for_each(mObjects, [&os] ( auto && object ) { os << "    " << object.get() << " ["; object->dump(os) << "]\n"; } );
   os << "  observers:\n";
   for_each(mObservers, [&os] ( auto && object ) { os << "    " << object  << " ["; object->dump(os) << "]\n"; } );
+  os << "  version 1: " << mVersionOne << std::endl;
 }
 
 template<typename Archive>
@@ -60,12 +71,21 @@ void Composite::serialize(Archive & ar, [[maybe_unused]] unsigned int version)
   // serialize the objects
   ar & boost::serialization::make_nvp("Objects", mObjects);
   
+  // does not serialize shared objects
+  // ar & boost::serialization::make_nvp("SharedObjects", mSharedObjects);
+  
   // serializte the observers
   ar & boost::serialization::make_nvp("Observers", mObservers);
+  
+  // version one
+  if ( version == 1 )
+  {
+    ar & boost::serialization::make_nvp("VersionOne", const_cast<bool&>(mVersionOne) );
+  }
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-
+#if 0
 template
 void Composite::serialize(boost::archive::xml_oarchive & ar, unsigned int version);
 template
@@ -75,7 +95,7 @@ template
 void Composite::serialize(boost::archive::binary_oarchive & ar, unsigned int version);
 template
 void Composite::serialize(boost::archive::binary_iarchive & ar, unsigned int version);
-
+#endif
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------

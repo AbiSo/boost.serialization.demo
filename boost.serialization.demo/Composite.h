@@ -6,8 +6,8 @@
 #ifndef COMPOSITE_H
 #define COMPOSITE_H
 
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/unique_ptr.hpp>
+//#include <boost/serialization/version.hpp>
+//#include <boost/serialization/access.hpp>
 #include <boost/serialization/export.hpp>
 
 #include <memory>
@@ -17,14 +17,16 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-class Base;
+constexpr const int CompositeVersion = 0;
   
+class Base;
+
 class Composite
 {
 public:
   Composite() = default;
   ~Composite() = default;
-  Composite( size_t ones, size_t twos );
+  Composite( size_t ones, size_t twos, size_t threes, size_t fours );
   Composite( Composite const & ) = delete;
   Composite & operator = ( Composite const & ) = delete;
   void addObserver( Base * observer );
@@ -32,6 +34,7 @@ public:
 private:
   std::vector< std::unique_ptr<Base> > mObjects;
   std::vector< Base* > mObservers;
+  bool const mVersionOne{CompositeVersion==1}; // 0 vs. 1
 private:
   friend class boost::serialization::access;
   template <typename Archive>
@@ -42,7 +45,7 @@ private:
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
 
-BOOST_CLASS_VERSION( demo::Composite, 0 )
+BOOST_CLASS_VERSION( demo::Composite, demo::CompositeVersion )
 BOOST_CLASS_EXPORT_KEY(demo::Composite)
 
 // --------------------------------------------------------------------------------------------------------------------
