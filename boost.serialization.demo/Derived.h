@@ -8,6 +8,7 @@
 
 #include "Base.h"
 #include "utm.h"
+#include "utm2.h"
 
 #include <boost/format.hpp>
 #include <iostream>
@@ -46,12 +47,14 @@ struct One { static const char *name() { return "primus"; } };
 struct Two { static const char *name() { return "secundus"; } };
 struct Three { static const char *name() { return "tertius"; } };
 struct Four { static const char *name() { return "quartus"; } };
+struct Five { static const char *name() { return "quintus"; } };
 
 using DerivedOne   = Derived<One,int>;
 using DerivedTwo   = Derived<Two,utm>;
 using DerivedThree = Derived<Three,std::string>;
 using DerivedFour  = Derived<Four,int>;
-
+using DerivedFive  = Derived<Five,utm2>;
+  
   // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
@@ -60,11 +63,13 @@ BOOST_CLASS_VERSION( demo::DerivedOne, 0 )
 BOOST_CLASS_VERSION( demo::DerivedTwo, 0 )
 BOOST_CLASS_VERSION( demo::DerivedThree, 0 )
 BOOST_CLASS_VERSION( demo::DerivedFour, 0 )
+BOOST_CLASS_VERSION( demo::DerivedFive, 0 )
 
 BOOST_CLASS_EXPORT_KEY(demo::DerivedOne)
 BOOST_CLASS_EXPORT_KEY(demo::DerivedTwo)
 BOOST_CLASS_EXPORT_KEY(demo::DerivedThree)
 BOOST_CLASS_EXPORT_KEY(demo::DerivedFour)
+BOOST_CLASS_EXPORT_KEY(demo::DerivedFive)
 
 // --------------------------------------------------------------------------------------------------------------------
 #endif /* DERIVED_H */

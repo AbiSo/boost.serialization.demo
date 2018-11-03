@@ -61,7 +61,7 @@ void Composite::dump( std::ostream & os )
 }
 
 template<typename Archive>
-void Composite::serialize(Archive & ar, [[maybe_unused]] unsigned int version)
+void Composite::serialize(Archive & ar, [[maybe_unused]] const unsigned int version)
 {
   // make sure the archive knows the derived object types if the derived::serialize variations were
   // not pre-instantiated.

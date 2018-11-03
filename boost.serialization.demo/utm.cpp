@@ -21,8 +21,8 @@ std::istream & operator >> ( std::istream & is, utm & v )
 {
   unsigned int zone = 0;
   char         band = ' ';
-  double       e = 0.;
-  double       n = 0.;
+  double       e    = 0.;
+  double       n    = 0.;
   char   colon;
   if ( (is >> zone >> band >> colon >> e >> colon >> n).good() )
   {

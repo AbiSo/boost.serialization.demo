@@ -89,13 +89,16 @@ void read_archive( std::istream & in, unsigned int flags)
 {
   using boost::serialization::make_nvp;
   std::unique_ptr<demo::DerivedThree> observer;
+  std::unique_ptr<demo::DerivedFive> stalker;
   demo::Composite object;
   
   Archive ia(in,flags);
   ia >> make_nvp("observer", observer);
   ia >> make_nvp("object", object );
+  ia >> make_nvp("stalker", stalker);
   
   std::cout << "observer: " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
+  std::cout << "stalker : " << stalker.get() << " ["; stalker->dump(std::cout) << "]\n";
   object.dump(std::cout);
 }
 
@@ -121,14 +124,19 @@ void write_archive( std::ostream & out, unsigned int flags)
   using boost::serialization::make_nvp;
   
   auto observer = std::make_unique<demo::DerivedThree>("observer");
+  auto stalker = std::make_unique<demo::DerivedFive>(demo::utm2(1,'A',321,123));
+
   demo::Composite object(1,1,2,3);
   object.addObserver(observer.get());
-  
+  object.addObserver(stalker.get());
   Archive oa(out,flags);
+  
   oa << make_nvp("observer", observer);
   oa << make_nvp("object", object);
+  oa << make_nvp("stalker", stalker);
   
   std::cout << "observer: " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
+  std::cout << "stalker : " << stalker.get() << " ["; stalker->dump(std::cout) << "]\n";
   object.dump(std::cout);
 }
 

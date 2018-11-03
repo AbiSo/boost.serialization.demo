@@ -60,4 +60,5 @@ BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedOne)
 BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedTwo)
 BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedThree)
 BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedFour)
+BOOST_CLASS_EXPORT_IMPLEMENT(demo::DerivedFive)
 // ====================================================================================================================

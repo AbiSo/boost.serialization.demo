@@ -26,7 +26,7 @@ public:
   Base & operator = ( Base const & ) = default;
   
   virtual std::ostream & dump( std::ostream & out ) const = 0;
-  
+
 private:
   // let boost serialization see your class
   friend class boost::serialization::access;
@@ -35,7 +35,7 @@ private:
   //
   // might result in duplicated code and problems in deployment and upgrade procedures.
   template <typename Archive>
-  void serialize( Archive & ar [[maybe_unused]], unsigned int version [[maybe_unused]] )
+  void serialize( Archive & ar [[maybe_unused]], const unsigned int version [[maybe_unused]] )
   {
   }
 };
