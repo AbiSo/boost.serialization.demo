@@ -13,12 +13,16 @@ The output of the project is the program `demo` which has some option `demo --he
 
 Note: Requires C++17 to build. 
 
+## Linux
+
+- Use CMake to build the project.
+
 ## MacOS
 
 - The project makes use of Boost as provided by [Homebrew](https://brew.sh)
-- Use either CMake or the Xcode project to build.
+- Use either building_with_cmake or included the Xcode project to build.
 
-### CMake
+## Building with CMake
 ````sh
 > cd boost.serialization.demo
 > mkdir Build
