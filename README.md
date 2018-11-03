@@ -7,7 +7,7 @@ Experimenting with Boost.Serialization.
   - custom primitive types
 - export
 
-The output of the project is the program `demo` which has some option `demo --help` to write/read binary or xml archives.
+The output of the project is the program `demo` which has some options (see `demo --help`) to write/read binary or xml archives.
 
 # Building
 
