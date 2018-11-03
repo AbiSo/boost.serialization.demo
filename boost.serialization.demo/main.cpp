@@ -11,17 +11,22 @@
 // ---------------------- my
 #include "Composite.h"
 #include "Derived.h"
+#include "utm.h"
+#include "utm2.h"
+#include "utm3.h"
 // ---------------------- boost
 #include <boost/version.hpp>
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
 #include <boost/program_options.hpp>
 #include <boost/serialization/unique_ptr.hpp>
+#include <boost/timer/timer.hpp>
 // ---------------------- C++/STL
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <utility>
 
 // some short cuts
 using std::pair;
@@ -37,8 +42,9 @@ struct Options
 {
   string Output;
   string Input;
-  bool   WithoutHeader;
-  bool   Binary;
+  size_t Count{10};
+  bool   WithoutHeader{false};
+  bool   Binary{false};
 };
 
 Options args(int argc, const char *argv[])
@@ -49,11 +55,12 @@ Options args(int argc, const char *argv[])
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help,h", "this help message")
-    ("in,i", po::value<string>(&rv.Input), "read archive from file")
-    ("out,o", po::value<string>(&rv.Output),  "write archive to this file")
+    ("in,i", po::value(&rv.Input), "read archive from file")
+    ("out,o", po::value(&rv.Output),  "write archive to this file")
     ("no-header,s", "omit archive header information")
     ("binary,b", "use binary archive instead of xml archive")
-  ;
+    ("count", po::value(&rv.Count), "min. number of elements")
+    ;
   
 
   try
@@ -91,15 +98,29 @@ void read_archive( std::istream & in, unsigned int flags)
   std::unique_ptr<demo::DerivedThree> observer;
   std::unique_ptr<demo::DerivedFive> stalker;
   demo::Composite object;
-  
-  Archive ia(in,flags);
-  ia >> make_nvp("observer", observer);
-  ia >> make_nvp("object", object );
-  ia >> make_nvp("stalker", stalker);
-  
+
+  demo::utm  utm;
+  demo::utm2 utm2;
+  demo::utm3 utm3;
+
+  {
+    boost::timer::auto_cpu_timer t;
+    Archive ia(in,flags);
+    ia >> make_nvp("observer", observer);
+    ia >> make_nvp("object", object );
+    ia >> make_nvp("stalker", stalker);
+    
+    ia >> make_nvp("utm_as_primitive", utm);
+    ia >> make_nvp("utm_serialize", utm2);
+    ia >> make_nvp("utm_load_save", utm3);
+  }
+
   std::cout << "observer: " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
   std::cout << "stalker : " << stalker.get() << " ["; stalker->dump(std::cout) << "]\n";
   object.dump(std::cout);
+  std::cout << "utm prim: " << utm << std::endl;
+  std::cout << "utm serl: " << utm2 << std::endl;
+  std::cout << "utm spli: " << utm3 << std::endl;
 }
 
 void read_archive( string filename, unsigned int flags, bool binary )
@@ -119,37 +140,55 @@ catch(std::exception & x)
 }
 
 template< typename Archive>
-void write_archive( std::ostream & out, unsigned int flags)
+void write_archive( std::ostream & out, unsigned int flags, size_t count)
 {
   using boost::serialization::make_nvp;
   
   auto observer = std::make_unique<demo::DerivedThree>("observer");
   auto stalker = std::make_unique<demo::DerivedFive>(demo::utm2(1,'A',321,123));
 
-  demo::Composite object(1,1,2,3);
+  auto one   = std::max(static_cast<size_t>(1), static_cast<size_t>(count * 1 / 10) );
+  auto two   = std::max(static_cast<size_t>(1), static_cast<size_t>(count * 2 / 10) );
+  auto three = std::max(static_cast<size_t>(2), static_cast<size_t>(count * 3 / 10) );
+  auto four  = std::max(static_cast<size_t>(3), static_cast<size_t>(count * 4 / 10) );
+  
+  demo::Composite object(one,two,three,four);
   object.addObserver(observer.get());
   object.addObserver(stalker.get());
-  Archive oa(out,flags);
   
-  oa << make_nvp("observer", observer);
-  oa << make_nvp("object", object);
-  oa << make_nvp("stalker", stalker);
+  demo::utm  utm(1,'A',2,3);
+  demo::utm2 utm2(2,'B',3,4);
+  demo::utm3 utm3(3,'C',4,5);
+
+  {
+    boost::timer::auto_cpu_timer t;
+    Archive oa(out,flags);
+    oa << make_nvp("observer", observer);
+    oa << make_nvp("object", object);
+    oa << make_nvp("stalker", stalker);
+    oa << make_nvp("utm_as_primitive", utm);
+    oa << make_nvp("utm_serialize", utm2);
+    oa << make_nvp("utm_load_save", utm3);
+  }
   
   std::cout << "observer: " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
   std::cout << "stalker : " << stalker.get() << " ["; stalker->dump(std::cout) << "]\n";
   object.dump(std::cout);
+  std::cout << "utm prim: " << utm << std::endl;
+  std::cout << "utm serl: " << utm2 << std::endl;
+  std::cout << "utm spli: " << utm3 << std::endl;
 }
 
-void write_archive( string filename, unsigned int flags, bool binary )
+void write_archive( string filename, unsigned int flags, bool binary, size_t count )
 try
 {
   std::cout << "# write archive to file " << filename << "\n";
   std::ios::openmode mode = binary ? (std::ios::out|std::ios::binary) : std::ios::out;
   std::ofstream ofile(filename,mode);
   if (binary)
-    write_archive<boost::archive::binary_oarchive>(ofile, flags );
+    write_archive<boost::archive::binary_oarchive>(ofile, flags, count );
   else
-    write_archive<boost::archive::xml_oarchive>(ofile, flags );
+    write_archive<boost::archive::xml_oarchive>(ofile, flags, count );
 }
 catch(std::exception & x)
 {
@@ -178,7 +217,7 @@ try
   if ( opt.WithoutHeader )
     flags |= boost::archive::no_header;
   
-  if ( !opt.Output.empty() ) write_archive( opt.Output, flags, opt.Binary );
+  if ( !opt.Output.empty() ) write_archive( opt.Output, flags, opt.Binary, opt.Count );
   if ( !opt.Input.empty() ) read_archive( opt.Input, flags, opt.Binary );
 }
 catch( boost::archive::archive_exception & )

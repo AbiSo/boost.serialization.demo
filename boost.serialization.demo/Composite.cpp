@@ -16,6 +16,7 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/range/algorithm/for_each.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 #include <iostream>
 
@@ -49,14 +50,26 @@ void Composite::addObserver( Base * observer )
   mObservers.push_back(observer);
 }
 
+template<typename C>
+auto make_range( C & range, size_t count )
+{
+  auto beg = range.begin();
+  auto end = std::next(beg, std::min(count,range.size()));
+  return boost::make_iterator_range(beg,end);
+}
+  
 void Composite::dump( std::ostream & os )
 {
   using boost::range::for_each;
   os << "composite:\n";
-  os << "  objects:\n";
-  for_each(mObjects, [&os] ( auto && object ) { os << "    " << object.get() << " ["; object->dump(os) << "]\n"; } );
-  os << "  observers:\n";
-  for_each(mObservers, [&os] ( auto && object ) { os << "    " << object  << " ["; object->dump(os) << "]\n"; } );
+  os << "  objects #" << mObjects.size() << ":\n";
+  for_each(make_range(mObjects,10), [&os] ( auto && object ) { os << "    " << object.get() << " ["; object->dump(os) << "]\n"; } );
+  if ( mObjects.size() > 10 )
+    os << "    ..." << mObjects.size() - 10 << " more..." << std::endl;
+  os << "  observers #" << mObservers.size() << ":\n";
+  for_each(make_range(mObservers,10), [&os] ( auto && object ) { os << "    " << object  << " ["; object->dump(os) << "]\n"; } );
+  if ( mObservers.size() > 10 )
+    os << "    ..." << mObservers.size() - 10 << " more..." << std::endl;
   os << "  version 1: " << mVersionOne << std::endl;
 }
 

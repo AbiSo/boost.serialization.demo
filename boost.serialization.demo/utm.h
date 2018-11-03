@@ -16,7 +16,7 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-// treat object of utm as primitive type
+// treat object as primitive type
 class utm
 {
 public:

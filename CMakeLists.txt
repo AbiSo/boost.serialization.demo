@@ -6,7 +6,7 @@ set(CMAKE_CXX EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED OFF)
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Boost 1.65 REQUIRED serialization program_options system)
+find_package(Boost 1.67 REQUIRED serialization program_options timer system)
 file(GLOB src boost.serialization.demo/*.cpp)
 
 add_executable(demo ${src})
@@ -14,6 +14,7 @@ add_executable(demo ${src})
 target_link_libraries(demo
   Boost::serialization
   Boost::program_options
+  Boost::timer
   Boost::system
 )
 
