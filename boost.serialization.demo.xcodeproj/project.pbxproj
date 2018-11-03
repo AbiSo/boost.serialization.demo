@@ -11,6 +11,7 @@
 		003D41E01FDDC31C00B5CF0D /* Composite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 003D41DE1FDDC31C00B5CF0D /* Composite.cpp */; };
 		003D41E31FDDC35500B5CF0D /* Base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 003D41E11FDDC35500B5CF0D /* Base.cpp */; };
 		003D41E61FDDC39200B5CF0D /* Derived.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 003D41E41FDDC39200B5CF0D /* Derived.cpp */; };
+		0059EE45218DC8B600300BBC /* utm2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0059EE43218DC8B600300BBC /* utm2.cpp */; };
 		008E1F8B1FDBF8F400B025A4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008E1F8A1FDBF8F400B025A4 /* main.cpp */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +36,8 @@
 		003D41E21FDDC35500B5CF0D /* Base.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Base.h; sourceTree = "<group>"; };
 		003D41E41FDDC39200B5CF0D /* Derived.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Derived.cpp; sourceTree = "<group>"; };
 		003D41E51FDDC39200B5CF0D /* Derived.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Derived.h; sourceTree = "<group>"; };
+		0059EE43218DC8B600300BBC /* utm2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utm2.cpp; sourceTree = "<group>"; };
+		0059EE44218DC8B600300BBC /* utm2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utm2.h; sourceTree = "<group>"; };
 		008E1F871FDBF8F400B025A4 /* boost.serialization.demo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = boost.serialization.demo; sourceTree = BUILT_PRODUCTS_DIR; };
 		008E1F8A1FDBF8F400B025A4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		00E0F5941FDD54D7002F0A9D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
@@ -80,6 +83,8 @@
 				003D41E21FDDC35500B5CF0D /* Base.h */,
 				003D41E41FDDC39200B5CF0D /* Derived.cpp */,
 				003D41E51FDDC39200B5CF0D /* Derived.h */,
+				0059EE43218DC8B600300BBC /* utm2.cpp */,
+				0059EE44218DC8B600300BBC /* utm2.h */,
 			);
 			path = boost.serialization.demo;
 			sourceTree = "<group>";
@@ -146,6 +151,7 @@
 				003D41E01FDDC31C00B5CF0D /* Composite.cpp in Sources */,
 				008E1F8B1FDBF8F400B025A4 /* main.cpp in Sources */,
 				003D41E31FDDC35500B5CF0D /* Base.cpp in Sources */,
+				0059EE45218DC8B600300BBC /* utm2.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
