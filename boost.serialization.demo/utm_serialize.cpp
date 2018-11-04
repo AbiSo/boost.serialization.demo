@@ -9,8 +9,8 @@
 // allow compiler to pre-instantiate serialize templates for xml and binary archives
 // in combination of BOOST_CLASS_EXPORT_IMPLEMENT
 //
-#define DEMO_PRESINSTANTIATION_OF_MEMBER_TEMPLATE_SERIALIZE
-#if defined(DEMO_PRESINSTANTIATION_OF_MEMBER_TEMPLATE_SERIALIZE)
+#define DEMO_PREINSTANTIATION_OF_MEMBER_TEMPLATE_SERIALIZE
+#if defined(DEMO_PREINSTANTIATION_OF_MEMBER_TEMPLATE_SERIALIZE)
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
@@ -29,7 +29,7 @@ namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
 template<typename Archive>
-void utm_serialize::serialize( Archive & ar, const unsigned int )
+void utm_serialize::serialize( Archive & ar, unsigned int )
 {
   using boost::serialization::make_nvp;
   ar & make_nvp("zone"    , mZone);
@@ -45,6 +45,19 @@ std::ostream & operator << ( std::ostream & os, utm_serialize const & v )
 }
     
 
+// --------------------------------------------------------------------------------------------------------------------
+#if 0
+template
+void utm_serialize::serialize(boost::archive::xml_oarchive & ar, unsigned int version);
+template
+void utm_serialize::serialize(boost::archive::xml_iarchive & ar, unsigned int version);
+#endif
+#if defined(NDEBUG)
+template
+void utm_serialize::serialize(boost::archive::binary_oarchive & ar, unsigned int version);
+template
+void utm_serialize::serialize(boost::archive::binary_iarchive & ar, unsigned int version);
+#endif
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------

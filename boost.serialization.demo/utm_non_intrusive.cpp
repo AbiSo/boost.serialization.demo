@@ -48,7 +48,7 @@ namespace boost::serialization {
 
 #if !defined(DEMO_UTM1_HDR_INLINED)
 template <typename Archive>
-void serialize( Archive & ar, demo::utm_non_intrusive & u, [[maybe_unused]] const unsigned int version)
+void serialize( Archive & ar, demo::utm_non_intrusive & u, unsigned int version [[maybe_unused]] )
 {
   using boost::serialization::make_nvp;
   auto zone    = u.zone();
@@ -66,6 +66,10 @@ void serialize( Archive & ar, demo::utm_non_intrusive & u, [[maybe_unused]] cons
 }
 #endif
 
+#if defined(NDEBUG)
+template
+void serialize(boost::archive::binary_oarchive & ar, demo::utm_non_intrusive &, unsigned int);
+#endif
 // --------------------------------------------------------------------------------------------------------------------
 } // boost::serialization
 // --------------------------------------------------------------------------------------------------------------------

@@ -6,8 +6,8 @@
 //  Copyright © 2018 Abhijit Sovakar. All rights reserved.
 //
 
-#ifndef UTM3_H
-#define UTM3_H
+#ifndef UTM_SPLIT_H
+#define UTM_SPLIT_H
 
 #include <iosfwd>
 
@@ -44,9 +44,9 @@ private:
 private:
   friend class boost::serialization::access;
   template<typename Archive>
-  void save(Archive & ar, const unsigned int version) const;
+  void save(Archive & ar, unsigned int version) const;
   template<typename Archive>
-  void load(Archive & ar, const unsigned int version);
+  void load(Archive & ar, unsigned int version);
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
   

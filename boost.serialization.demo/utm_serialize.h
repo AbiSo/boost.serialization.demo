@@ -6,8 +6,8 @@
 //  Copyright © 2018 Abhijit Sovakar. All rights reserved.
 //
 
-#ifndef UTM2_H
-#define UTM2_H
+#ifndef UTM_SERIALIZE_H
+#define UTM_SERIALIZE_H
 
 #include <iosfwd>
 
@@ -43,7 +43,7 @@ private:
 private:
   friend class boost::serialization::access; // allow boost seriliazation to access private members
   template <typename Archive>
-  void serialize( Archive & ar, const unsigned int version ); // the object serializer itself
+  void serialize( Archive & ar, unsigned int version ); // the object serializer itself
 };
   
 std::ostream & operator << ( std::ostream & os, utm_serialize const & v );

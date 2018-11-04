@@ -6,8 +6,8 @@
 //  Copyright © 2018 Abhijit Sovakar. All rights reserved.
 //
 
-#ifndef UTM1_hpp
-#define UTM1_hpp
+#ifndef UTM_NON_INTRUSIVE_H
+#define UTM_NON_INTRUSIVE_H
 
 #include <iosfwd>
 
@@ -63,10 +63,10 @@ namespace boost::serialization {
 #undef DEMO_UTM1_HDR_INLINED
 #if !defined(DEMO_UTM1_HDR_INLINED)
 template <typename Archive>
-void serialize( Archive & ar, demo::utm_non_intrusive & u, const unsigned int version);
+void serialize( Archive & ar, demo::utm_non_intrusive & u, unsigned int version);
 #else
 template <typename Archive>
-void serialize( Archive & ar, demo::utm1 & u, [[maybe_unused]] const unsigned int version)
+void serialize( Archive & ar, demo::utm_non_intrusive & u, unsigned int version [[maybe_unused]])
 {
   using boost::serialization::make_nvp;
   auto zone    = u.zone();
@@ -78,12 +78,12 @@ void serialize( Archive & ar, demo::utm1 & u, [[maybe_unused]] const unsigned in
      & make_nvp("easting", easting)
      & make_nvp("northing", northing);
   if ( Archive::is_loading::value )
-    u = demo::utm1(zone,band,easting,northing);
+    u = demo::utm_non_intrusive(zone,band,easting,northing);
 }
 #endif
   
 // --------------------------------------------------------------------------------------------------------------------
 }
 // --------------------------------------------------------------------------------------------------------------------
-#endif /* UTM1_H */
+#endif /* UTM_NON_INTRUSIVE_H */
 // ====================================================================================================================

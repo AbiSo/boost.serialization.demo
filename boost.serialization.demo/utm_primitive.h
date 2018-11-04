@@ -3,8 +3,8 @@
 //  boost.serialization.demo
 //
 
-#ifndef UTM_H
-#define UTM_H
+#ifndef UTM_PRIMITIVE_H
+#define UTM_PRIMITIVE_H
 
 #include <iosfwd>
 
@@ -61,5 +61,5 @@ BOOST_CLASS_IMPLEMENTATION(demo::utm_primitive, boost::serialization::primitive_
 BOOST_IS_BITWISE_SERIALIZABLE(demo::utm_primitive)
 
 // --------------------------------------------------------------------------------------------------------------------
-#endif /* utm_hpp */
+#endif /* UTM_PRIMITIVE_H */
 // ====================================================================================================================
