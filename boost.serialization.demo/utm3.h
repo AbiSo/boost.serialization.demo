@@ -20,7 +20,7 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-// treat object of utm2 as class with versioning
+// splitting serialize into save/load
 class utm3
 {
 public:

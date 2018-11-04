@@ -19,13 +19,13 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-// treat object of utm2 as class with versioning
+// object serialize
 class utm2
 {
 public:
   using coord = float;
   
-  utm2() = default;
+  utm2() = default; // required for de-serialize !!
   utm2( unsigned int zone, char band, coord easting, coord northing )
     : mZone(zone), mBand(band), mEasting(easting), mNorthing(northing)
   {}
@@ -41,9 +41,9 @@ private:
   coord        mEasting{1};
   coord        mNorthing{2};
 private:
-  friend class boost::serialization::access;
+  friend class boost::serialization::access; // allow boost seriliazation to access private members
   template <typename Archive>
-  void serialize( Archive & ar, const unsigned int version );
+  void serialize( Archive & ar, const unsigned int version ); // the object serializer itself
 };
   
 std::ostream & operator << ( std::ostream & os, utm2 const & v );
