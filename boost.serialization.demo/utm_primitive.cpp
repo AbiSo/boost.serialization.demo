@@ -3,7 +3,7 @@
 //  boost.serialization.demo
 //
 
-#include "utm.h"
+#include "utm_primitive.h"
 
 #include <iostream>
 
@@ -11,13 +11,13 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-std::ostream & operator << ( std::ostream & os, utm const & v )
+std::ostream & operator << ( std::ostream & os, utm_primitive const & v )
 {
   os << v.zone() << v.band() << ':' << v.easting() << ':' << v.northing();
   return os;
 }
 
-std::istream & operator >> ( std::istream & is, utm & v )
+std::istream & operator >> ( std::istream & is, utm_primitive & v )
 {
   unsigned int zone = 0;
   char         band = ' ';
@@ -26,7 +26,7 @@ std::istream & operator >> ( std::istream & is, utm & v )
   char   colon;
   if ( (is >> zone >> band >> colon >> e >> colon >> n).good() )
   {
-    v = utm(zone,band,e,n);
+    v = utm_primitive(zone,band,e,n);
   }
   return is;
 }

@@ -11,8 +11,8 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 
-#include "utm1.h"
-#include "utm.h"
+#include "utm_non_intrusive.h"
+#include "utm_primitive.h"
 
 #include <iostream>
 
@@ -20,13 +20,13 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-std::ostream & operator << ( std::ostream & os, utm1 const & v )
+std::ostream & operator << ( std::ostream & os, utm_non_intrusive const & v )
 {
   os << v.zone() << v.band() << ':' << v.easting() << ':' << v.northing();
   return os;
 }
 
-std::istream & operator >> ( std::istream & is, utm1 & v )
+std::istream & operator >> ( std::istream & is, utm_non_intrusive & v )
 {
   unsigned int zone = 0;
   char         band = ' ';
@@ -35,7 +35,7 @@ std::istream & operator >> ( std::istream & is, utm1 & v )
   char   colon;
   if ( (is >> zone >> band >> colon >> e >> colon >> n).good() )
   {
-    v = utm1(zone,band,e,n);
+    v = utm_non_intrusive(zone,band,e,n);
   }
   return is;
 }
@@ -48,7 +48,7 @@ namespace boost::serialization {
 
 #if !defined(DEMO_UTM1_HDR_INLINED)
 template <typename Archive>
-void serialize( Archive & ar, demo::utm1 & u, [[maybe_unused]] const unsigned int version)
+void serialize( Archive & ar, demo::utm_non_intrusive & u, [[maybe_unused]] const unsigned int version)
 {
   using boost::serialization::make_nvp;
   auto zone    = u.zone();
@@ -62,12 +62,12 @@ void serialize( Archive & ar, demo::utm1 & u, [[maybe_unused]] const unsigned in
      & make_nvp("northing", northing);
   
   if ( Archive::is_loading::value )
-    u = demo::utm1(zone,band,easting,northing);
+    u = demo::utm_non_intrusive(zone,band,easting,northing);
 }
 #endif
 
 // --------------------------------------------------------------------------------------------------------------------
 } // boost::serialization
 // --------------------------------------------------------------------------------------------------------------------
-BOOST_CLASS_EXPORT_IMPLEMENT(demo::utm1)
+BOOST_CLASS_EXPORT_IMPLEMENT(demo::utm_non_intrusive)
 // ====================================================================================================================

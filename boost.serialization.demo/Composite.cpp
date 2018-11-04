@@ -32,7 +32,7 @@ Composite::Composite(size_t ones, size_t twos, size_t threes, size_t fours)
   } while( --ones );
   do
   {
-    mObjects.emplace_back( new DerivedTwo(utm(32,'N',5.5 + twos,50.05-twos)));
+    mObjects.emplace_back( new DerivedTwo(utm_primitive(32,'N',5.5 + twos,50.05-twos)));
   } while (--twos );
   std::vector<const char*> digit{"zero", "uno", "dos", "tres" };
   do

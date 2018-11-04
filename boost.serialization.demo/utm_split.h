@@ -21,13 +21,13 @@ namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
 // splitting serialize into save/load
-class utm3
+class utm_split
 {
 public:
   using coord = float;
   
-  utm3() = default;
-  utm3( unsigned int zone, char band, coord easting, coord northing )
+  utm_split() = default;
+  utm_split( unsigned int zone, char band, coord easting, coord northing )
   : mZone(zone), mBand(band), mEasting(easting), mNorthing(northing)
   {}
   
@@ -50,12 +50,12 @@ private:
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
   
-std::ostream & operator << ( std::ostream & os, utm3 const & v );
+std::ostream & operator << ( std::ostream & os, utm_split const & v );
   
 // --------------------------------------------------------------------------------------------------------------------
 }
 // --------------------------------------------------------------------------------------------------------------------
-BOOST_CLASS_VERSION(demo::utm3,0)
+BOOST_CLASS_VERSION(demo::utm_split,0)
 
 // split BOOST_CLASS_EXPORT by
 // 1. placing BOOST_CLASS_EXPORT_KEX in the header
@@ -63,7 +63,7 @@ BOOST_CLASS_VERSION(demo::utm3,0)
 //    Make sure to include the archive types before any other serialization headers especially the export.hpp.
 // as a result the serialization code will be in the compile unit that contains BOOST_CLASS_EXPORT_IMPLEMENT.
 // This is particularly important for building shared-objects or DLLs, to maintain the one-definition-rule in c++.
-BOOST_CLASS_EXPORT_KEY(demo::utm3)
+BOOST_CLASS_EXPORT_KEY(demo::utm_split)
 // --------------------------------------------------------------------------------------------------------------------
 #endif
 // ====================================================================================================================

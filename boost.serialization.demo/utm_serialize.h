@@ -20,13 +20,13 @@ namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
 // object serialize
-class utm2
+class utm_serialize
 {
 public:
   using coord = float;
   
-  utm2() = default; // required for de-serialize !!
-  utm2( unsigned int zone, char band, coord easting, coord northing )
+  utm_serialize() = default; // required for de-serialize !!
+  utm_serialize( unsigned int zone, char band, coord easting, coord northing )
     : mZone(zone), mBand(band), mEasting(easting), mNorthing(northing)
   {}
     
@@ -46,12 +46,12 @@ private:
   void serialize( Archive & ar, const unsigned int version ); // the object serializer itself
 };
   
-std::ostream & operator << ( std::ostream & os, utm2 const & v );
+std::ostream & operator << ( std::ostream & os, utm_serialize const & v );
 
 // --------------------------------------------------------------------------------------------------------------------
 }
 // --------------------------------------------------------------------------------------------------------------------
-BOOST_CLASS_VERSION(demo::utm2,0)
+BOOST_CLASS_VERSION(demo::utm_serialize,0)
 
 // split BOOST_CLASS_EXPORT by
 // 1. placing BOOST_CLASS_EXPORT_KEX in the header
@@ -59,7 +59,7 @@ BOOST_CLASS_VERSION(demo::utm2,0)
 //    Make sure to include the archive types before any other serialization headers especially the export.hpp.
 // as a result the serialization code will be in the compile unit that contains BOOST_CLASS_EXPORT_IMPLEMENT.
 // This is particularly important for building shared-objects or DLLs, to maintain the one-definition-rule in c++.
-BOOST_CLASS_EXPORT_KEY(demo::utm2)
+BOOST_CLASS_EXPORT_KEY(demo::utm_serialize)
 // --------------------------------------------------------------------------------------------------------------------
 #endif
 // ====================================================================================================================

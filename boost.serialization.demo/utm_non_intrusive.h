@@ -21,11 +21,11 @@ namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
 // non-intrusive serialization
-class utm1
+class utm_non_intrusive
 {
 public:
-  utm1() = default;
-  utm1( unsigned int zone, char band, double easting, double northing )
+  utm_non_intrusive() = default;
+  utm_non_intrusive( unsigned int zone, char band, double easting, double northing )
   : mZone(zone), mBand(band), mEasting(easting), mNorthing(northing)
   {}
   
@@ -41,21 +41,21 @@ private:
   double       mNorthing{0.1};
 };
 
-std::ostream & operator << ( std::ostream & os, utm1 const & v );
+std::ostream & operator << ( std::ostream & os, utm_non_intrusive const & v );
 
 // --------------------------------------------------------------------------------------------------------------------
 }
 // --------------------------------------------------------------------------------------------------------------------
 
-BOOST_CLASS_VERSION(demo::utm1,0)
+BOOST_CLASS_VERSION(demo::utm_non_intrusive,0)
 
 // bitwise serialize in binary archives
 // pre-condition: the type
 // - is a POD data type
 // - contains no pointer members which are not versioned and not tracked.
-BOOST_IS_BITWISE_SERIALIZABLE(demo::utm1)
+BOOST_IS_BITWISE_SERIALIZABLE(demo::utm_non_intrusive)
 
-BOOST_CLASS_EXPORT_KEY(demo::utm1)
+BOOST_CLASS_EXPORT_KEY(demo::utm_non_intrusive)
 
 // --------------------------------------------------------------------------------------------------------------------
 namespace boost::serialization {
@@ -63,7 +63,7 @@ namespace boost::serialization {
 #undef DEMO_UTM1_HDR_INLINED
 #if !defined(DEMO_UTM1_HDR_INLINED)
 template <typename Archive>
-void serialize( Archive & ar, demo::utm1 & u, const unsigned int version);
+void serialize( Archive & ar, demo::utm_non_intrusive & u, const unsigned int version);
 #else
 template <typename Archive>
 void serialize( Archive & ar, demo::utm1 & u, [[maybe_unused]] const unsigned int version)

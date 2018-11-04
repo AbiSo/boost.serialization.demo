@@ -17,11 +17,11 @@ namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
 // treat object as primitive type
-class utm
+class utm_primitive
 {
 public:
-  utm() = default;
-  utm( unsigned int zone, char band, double easting, double northing )
+  utm_primitive() = default;
+  utm_primitive( unsigned int zone, char band, double easting, double northing )
     : mZone(zone), mBand(band), mEasting(easting), mNorthing(northing)
   {}
   
@@ -38,27 +38,27 @@ private:
 };
 
 // required for serialization of "primitive types"
-std::ostream & operator << ( std::ostream & os, utm const & v );
+std::ostream & operator << ( std::ostream & os, utm_primitive const & v );
 
 // required for serialization of "primitive types"
-std::istream & operator >> ( std::istream & is, utm & v );
+std::istream & operator >> ( std::istream & is, utm_primitive & v );
 
 // --------------------------------------------------------------------------------------------------------------------
 }
 // --------------------------------------------------------------------------------------------------------------------
 
 // rendered obsolete for "primitive" type
-BOOST_CLASS_VERSION(demo::utm,0);
+BOOST_CLASS_VERSION(demo::utm_primitive,0);
 
 // elminate serialization overhead at the cost of
 // never being able to increase the version.
-BOOST_CLASS_IMPLEMENTATION(demo::utm, boost::serialization::primitive_type);
+BOOST_CLASS_IMPLEMENTATION(demo::utm_primitive, boost::serialization::primitive_type);
 
 // bitwise serialize in binary archives
 // pre-condition: the type
 // - is a POD data type
 // - contains no pointer members which are not versioned and not tracked.
-BOOST_IS_BITWISE_SERIALIZABLE(demo::utm)
+BOOST_IS_BITWISE_SERIALIZABLE(demo::utm_primitive)
 
 // --------------------------------------------------------------------------------------------------------------------
 #endif /* utm_hpp */

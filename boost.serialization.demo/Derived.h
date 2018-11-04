@@ -7,8 +7,8 @@
 #define DERIVED_H
 
 #include "Base.h"
-#include "utm.h"
-#include "utm2.h"
+#include "utm_primitive.h"
+#include "utm_serialize.h"
 
 #include <boost/format.hpp>
 #include <iostream>
@@ -50,10 +50,10 @@ struct Four { static const char *name() { return "quartus"; } };
 struct Five { static const char *name() { return "quintus"; } };
 
 using DerivedOne   = Derived<One,int>;
-using DerivedTwo   = Derived<Two,utm>;
+using DerivedTwo   = Derived<Two,utm_primitive>;
 using DerivedThree = Derived<Three,std::string>;
 using DerivedFour  = Derived<Four,int>;
-using DerivedFive  = Derived<Five,utm2>;
+using DerivedFive  = Derived<Five,utm_serialize>;
   
   // --------------------------------------------------------------------------------------------------------------------
 } // demo

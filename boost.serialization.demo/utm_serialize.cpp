@@ -1,5 +1,5 @@
 //
-//  utm3.cpp
+//  utm2.cpp
 //  boost.serialization.demo
 //
 //  Created by Abhijit Sovakar on 03.11.18.
@@ -17,8 +17,8 @@
 #include <boost/archive/binary_oarchive.hpp>
 #endif
 
-#include "utm3.h"
-#include "utm.h"
+#include "utm_serialize.h"
+#include "utm_primitive.h"
 
 #include <boost/serialization/nvp.hpp>
 
@@ -29,7 +29,7 @@ namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
 template<typename Archive>
-void utm3::save( Archive & ar, const unsigned int ) const
+void utm_serialize::serialize( Archive & ar, const unsigned int )
 {
   using boost::serialization::make_nvp;
   ar & make_nvp("zone"    , mZone);
@@ -38,25 +38,16 @@ void utm3::save( Archive & ar, const unsigned int ) const
   ar & make_nvp("northing", mNorthing);
 }
 
-template<typename Archive>
-void utm3::load( Archive & ar, const unsigned int )
+std::ostream & operator << ( std::ostream & os, utm_serialize const & v )
 {
-  using boost::serialization::make_nvp;
-  ar & make_nvp("zone"    , mZone);
-  ar & make_nvp("band"    , mBand);
-  ar & make_nvp("easting" , mEasting);
-  ar & make_nvp("northing", mNorthing);
-}
-
-std::ostream & operator << ( std::ostream & os, utm3 const & v )
-{
-  os << utm( v.zone(), v.band(), v.easting(), v.northing() );
+  os << utm_primitive( v.zone(), v.band(), v.easting(), v.northing() );
   return os;
 }
-  
+    
+
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
 // requires include of supported archive types in case the member serialize is implemented in the sources
-BOOST_CLASS_EXPORT_IMPLEMENT(demo::utm3)
+BOOST_CLASS_EXPORT_IMPLEMENT(demo::utm_serialize)
 // ====================================================================================================================

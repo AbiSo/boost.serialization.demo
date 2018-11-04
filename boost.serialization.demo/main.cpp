@@ -11,10 +11,10 @@
 // ---------------------- my
 #include "Composite.h"
 #include "Derived.h"
-#include "utm.h"
-#include "utm1.h"
-#include "utm2.h"
-#include "utm3.h"
+#include "utm_primitive.h"
+#include "utm_non_intrusive.h"
+#include "utm_serialize.h"
+#include "utm_split.h"
 // ---------------------- boost
 #include <boost/version.hpp>
 #include <boost/format.hpp>
@@ -48,6 +48,18 @@ struct Options
   bool   Binary{false};
 };
 
+void set_extension( bool binary, std::string & filename )
+{
+  if ( filename.empty() )
+    return;
+  auto pos = filename.find_last_of(".");
+  const char *ext[2] = { ".xml", ".dat" };
+  if ( pos != std::string::npos )
+    filename = filename.substr(0,pos) + ext[binary];
+  else
+    filename += ext[binary];
+}
+
 Options args(int argc, const char *argv[])
 {
   Options rv;
@@ -63,7 +75,6 @@ Options args(int argc, const char *argv[])
     ("count", po::value(&rv.Count), "min. number of elements")
     ;
   
-
   try
   {
     po::variables_map vm;
@@ -80,6 +91,8 @@ Options args(int argc, const char *argv[])
     rv.WithoutHeader = vm.count("no-header") > 0;
     rv.Binary        = vm.count("binary") > 0;
 
+    set_extension( rv.Binary, rv.Input );
+    set_extension( rv.Binary, rv.Output );
   }
   catch( std::exception & x )
   {
@@ -100,31 +113,33 @@ void read_archive( std::istream & in, unsigned int flags)
   std::unique_ptr<demo::DerivedFive> stalker;
   demo::Composite object;
 
-  demo::utm  utm_primitive;
-  demo::utm1 utm_non_intrusive;
-  demo::utm2 utm_serialize;
-  demo::utm3 utm_split;
+  demo::utm_primitive  utm_primitive;
+  demo::utm_non_intrusive utm_non_intrusive;
+  demo::utm_serialize utm_serialize;
+  demo::utm_split utm_split;
 
+  std::cout << "# de-serializeome" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
     Archive ia(in,flags);
-    ia >> make_nvp("observer", observer);
-    ia >> make_nvp("object", object );
-    ia >> make_nvp("stalker", stalker);
-    
     ia >> make_nvp("utm_primitive", utm_primitive);
     ia >> make_nvp("utm_non_intrusive", utm_non_intrusive);
     ia >> make_nvp("utm_serialize", utm_serialize);
     ia >> make_nvp("utm_split", utm_split);
+    ia >> make_nvp("observer", observer);
+    ia >> make_nvp("object", object );
+    ia >> make_nvp("stalker", stalker);
+    
   }
 
-  std::cout << "observer         : " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
-  std::cout << "stalker          : " << stalker.get() << " ["; stalker->dump(std::cout) << "]\n";
-  object.dump(std::cout);
+  std::cout << "# values read" << std::endl;
   std::cout << "utm primitive    : " << utm_primitive << std::endl;
   std::cout << "utm non-intrusive: " << utm_non_intrusive << std::endl;
   std::cout << "utm serialize    : " << utm_serialize << std::endl;
   std::cout << "utm splt serial. : " << utm_split << std::endl;
+  std::cout << "observer         : " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
+  std::cout << "stalker          : " << stalker.get() << " ["; stalker->dump(std::cout) << "]\n";
+  object.dump(std::cout);
 }
 
 void read_archive( string filename, unsigned int flags, bool binary )
@@ -149,7 +164,7 @@ void write_archive( std::ostream & out, unsigned int flags, size_t count)
   using boost::serialization::make_nvp;
   
   auto observer = std::make_unique<demo::DerivedThree>("observer");
-  auto stalker = std::make_unique<demo::DerivedFive>(demo::utm2(1,'A',321,123));
+  auto stalker = std::make_unique<demo::DerivedFive>(demo::utm_serialize(1,'A',321,123));
 
   auto one   = std::max(static_cast<size_t>(1), static_cast<size_t>(count * 1 / 10) );
   auto two   = std::max(static_cast<size_t>(1), static_cast<size_t>(count * 2 / 10) );
@@ -160,30 +175,32 @@ void write_archive( std::ostream & out, unsigned int flags, size_t count)
   object.addObserver(observer.get());
   object.addObserver(stalker.get());
   
-  demo::utm  utm_primitive(1,'A',1,2);
-  demo::utm1 utm_non_intrusive(3,'B',5,8);
-  demo::utm2 utm_serialize(13,'C',21,34);
-  demo::utm3 utm_split(55,'D',89,144);
+  demo::utm_primitive  utm_primitive(1,'A',1,2);
+  demo::utm_non_intrusive utm_non_intrusive(3,'B',5,8);
+  demo::utm_serialize utm_serialize(13,'C',21,34);
+  demo::utm_split utm_split(55,'D',89,144);
 
+  std::cout << "# serialize some stuff" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
     Archive oa(out,flags);
-    oa << make_nvp("observer", observer);
-    oa << make_nvp("object", object);
-    oa << make_nvp("stalker", stalker);
     oa << make_nvp("utm_primitive", utm_primitive);
     oa << make_nvp("utm_non_intrusive", utm_non_intrusive);
     oa << make_nvp("utm_serialize", utm_serialize);
     oa << make_nvp("utm_split", utm_split);
+    oa << make_nvp("observer", observer);
+    oa << make_nvp("object", object);
+    oa << make_nvp("stalker", stalker);
   }
   
-  std::cout << "observer         : " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
-  std::cout << "stalker          : " << stalker.get() << " ["; stalker->dump(std::cout) << "]\n";
-  object.dump(std::cout);
+  std::cout << "# values written" << std::endl;
   std::cout << "utm primitive    : " << utm_primitive << std::endl;
   std::cout << "utm non-intrusive: " << utm_non_intrusive << std::endl;
   std::cout << "utm serialize    : " << utm_serialize << std::endl;
   std::cout << "utm splt serial. : " << utm_split << std::endl;
+  std::cout << "observer         : " << observer.get() << " ["; observer->dump(std::cout) << "]\n";
+  std::cout << "stalker          : " << stalker.get() << " ["; stalker->dump(std::cout) << "]\n";
+  object.dump(std::cout);
 }
 
 void write_archive( string filename, unsigned int flags, bool binary, size_t count )
