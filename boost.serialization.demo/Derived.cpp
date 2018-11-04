@@ -28,30 +28,6 @@ void Derived<Tag,V>::serialize( Archive & ar, unsigned int version [[maybe_unuse
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-
-#if 0
-template
-void DerivedOne::serialize(boost::archive::xml_oarchive & ar, unsigned int version);
-template
-void DerivedOne::serialize(boost::archive::xml_iarchive & ar, unsigned int version);
-
-template
-void DerivedOne::serialize(boost::archive::binary_oarchive & ar, unsigned int version);
-template
-void DerivedOne::serialize(boost::archive::binary_iarchive & ar, unsigned int version);
-
-template
-void DerivedTwo::serialize(boost::archive::xml_oarchive & ar, unsigned int version);
-template
-void DerivedTwo::serialize(boost::archive::xml_iarchive & ar, unsigned int version);
-
-template
-void DerivedTwo::serialize(boost::archive::binary_oarchive & ar, unsigned int version);
-template
-void DerivedTwo::serialize(boost::archive::binary_iarchive & ar, unsigned int version);
-#endif
-  
-// --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
 // register classes otherwise "unregistered class" exception:

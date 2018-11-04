@@ -10,6 +10,7 @@
 
 #include "Composite.h"
 #include "Derived.h"
+#include "utm_serialize.h"
 
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/unique_ptr.hpp>
@@ -50,6 +51,11 @@ void Composite::addObserver( Base * observer )
   mObservers.push_back(observer);
 }
 
+void Composite::setShared( std::shared_ptr<utm_serialize> shared )
+{
+  mSharedData = shared;
+}
+
 template<typename C>
 auto make_range( C & range, size_t count )
 {
@@ -70,30 +76,39 @@ void Composite::dump( std::ostream & os )
   for_each(make_range(mObservers,10), [&os] ( auto && object ) { os << "    " << object  << " ["; object->dump(os) << "]\n"; } );
   if ( mObservers.size() > 10 )
     os << "    ..." << mObservers.size() - 10 << " more..." << std::endl;
+  if ( !!mSharedData )
+    os << "  shared   : " << mSharedData.get() << "#" << mSharedData.use_count() << ": " << *mSharedData << std::endl;
+  else
+    os << "  shared   : nullptr" << std::endl;
   os << "  version 1: " << mVersionOne << std::endl;
 }
 
 template<typename Archive>
 void Composite::serialize(Archive & ar, [[maybe_unused]] const unsigned int version)
 {
+  using boost::serialization::make_nvp;
+  
   // make sure the archive knows the derived object types if the derived::serialize variations were
   // not pre-instantiated.
   //ar.register_type( static_cast< DerivedOne* >(nullptr) );
   //ar.register_type( static_cast< DerivedTwo* >(nullptr) );
   
   // serialize the objects
-  ar & boost::serialization::make_nvp("Objects", mObjects);
+  ar & make_nvp("Objects", mObjects);
   
   // does not serialize shared objects
   // ar & boost::serialization::make_nvp("SharedObjects", mSharedObjects);
   
   // serializte the observers
-  ar & boost::serialization::make_nvp("Observers", mObservers);
+  ar & make_nvp("Observers", mObservers);
+  
+  // shared pointer to tracked object
+  ar & make_nvp("shared", mSharedData );
   
   // version one
   if ( version == 1 )
   {
-    ar & boost::serialization::make_nvp("VersionOne", const_cast<bool&>(mVersionOne) );
+    ar & make_nvp("VersionOne", const_cast<bool&>(mVersionOne) );
   }
 }
 

@@ -47,7 +47,7 @@ std::istream & operator >> ( std::istream & is, utm_primitive & v );
 }
 // --------------------------------------------------------------------------------------------------------------------
 
-// rendered obsolete for "primitive" type
+// rendered obsolete for "primitive" type - no class versioning - always 0
 BOOST_CLASS_VERSION(demo::utm_primitive,0);
 
 // elminate serialization overhead at the cost of

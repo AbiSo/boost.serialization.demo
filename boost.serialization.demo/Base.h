@@ -25,6 +25,7 @@ public:
   Base( Base const & ) = default;
   Base & operator = ( Base const & ) = default;
   
+  virtual const char *name() const = 0;
   virtual std::ostream & dump( std::ostream & out ) const = 0;
 
 private:

@@ -27,6 +27,11 @@ public:
   Derived( Derived const & ) = default;
   Derived & operator = (Derived const &) = default;
   
+  const char * name() const override
+  {
+    return Tag::name();
+  }
+  
   std::ostream & dump( std::ostream & out ) const override
   {
     out << boost::format("%1$-8s value: %2%") % Tag::name() % mValue;

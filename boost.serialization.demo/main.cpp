@@ -105,10 +105,24 @@ Options args(int argc, const char *argv[])
   return rv;
 }
 
+std::string to_string( std::shared_ptr<demo::utm_serialize> const & p )
+{
+  std::ostringstream os;
+  if ( !!p )
+  {
+    os << p.get() << "#" << p.use_count() << ": '" << *p << "'";
+    return os.str();
+  }
+
+  return "nullptr";
+}
+
 template< typename Archive>
 void read_archive( std::istream & in, unsigned int flags)
 {
   using boost::serialization::make_nvp;
+  
+  std::shared_ptr<demo::utm_serialize> shared;
   std::unique_ptr<demo::DerivedThree> observer;
   std::unique_ptr<demo::DerivedFive> stalker;
   demo::Composite object;
@@ -122,6 +136,16 @@ void read_archive( std::istream & in, unsigned int flags)
   {
     boost::timer::auto_cpu_timer t;
     Archive ia(in,flags);
+    // type registration (save and load in the same order)
+    // 0. Use BOOST_CLASS_EXPORT or BOOST_CLASS_EXPORT_KEY/BOOST_CLASS_EXPORT_IMPLEMENT
+    //    Go to Derived.h and comment out BOOST_CLASS_EXPORT_KEY(demo::DeriveFive) and see what happens.
+    //    Note: use 1. or 2. to be able to write the archive. Read won't work if not adjusted symmetrically.
+    // 1. explicit registration:
+    //    ia.template register_type<demo::DerivedFive>();
+    // 2. automatic registration:
+    //    demo::DerivedFive d5;
+    //    ia >> make_nvp("lame", d5); // automatic registration
+    ia >> make_nvp("shared", shared);
     ia >> make_nvp("utm_primitive", utm_primitive);
     ia >> make_nvp("utm_non_intrusive", utm_non_intrusive);
     ia >> make_nvp("utm_serialize", utm_serialize);
@@ -133,6 +157,7 @@ void read_archive( std::istream & in, unsigned int flags)
   }
 
   std::cout << "# values read" << std::endl;
+  std::cout << "shared utm       : " << to_string(shared) << std::endl;
   std::cout << "utm primitive    : " << utm_primitive << std::endl;
   std::cout << "utm non-intrusive: " << utm_non_intrusive << std::endl;
   std::cout << "utm serialize    : " << utm_serialize << std::endl;
@@ -162,18 +187,22 @@ template< typename Archive>
 void write_archive( std::ostream & out, unsigned int flags, size_t count)
 {
   using boost::serialization::make_nvp;
-  
-  auto observer = std::make_unique<demo::DerivedThree>("observer");
-  auto stalker = std::make_unique<demo::DerivedFive>(demo::utm_serialize(1,'A',321,123));
 
+  // counts
   auto one   = std::max(static_cast<size_t>(1), static_cast<size_t>(count * 1 / 10) );
   auto two   = std::max(static_cast<size_t>(1), static_cast<size_t>(count * 2 / 10) );
   auto three = std::max(static_cast<size_t>(2), static_cast<size_t>(count * 3 / 10) );
   auto four  = std::max(static_cast<size_t>(3), static_cast<size_t>(count * 4 / 10) );
   
+  // stuff to serialize
+  auto shared   = std::make_shared<demo::utm_serialize>();
+  auto observer = std::make_unique<demo::DerivedThree>("observer");
+  auto stalker  = std::make_unique<demo::DerivedFive>(demo::utm_serialize(1,'A',321,123));
+
   demo::Composite object(one,two,three,four);
   object.addObserver(observer.get());
   object.addObserver(stalker.get());
+  object.setShared(shared);
   
   demo::utm_primitive  utm_primitive(1,'A',1,2);
   demo::utm_non_intrusive utm_non_intrusive(3,'B',5,8);
@@ -184,6 +213,16 @@ void write_archive( std::ostream & out, unsigned int flags, size_t count)
   {
     boost::timer::auto_cpu_timer t;
     Archive oa(out,flags);
+    // type registration (save and load in the same order)
+    // 0. Use BOOST_CLASS_EXPORT or BOOST_CLASS_EXPORT_KEY/BOOST_CLASS_EXPORT_IMPLEMENT
+    //    Go to Derived.h and comment out BOOST_CLASS_EXPORT_KEY(demo::DeriveFive) and see what happens.
+    //    Note: use 1. or 2. to be able to write the archive. Read won't work if not adjusted symmetrically.
+    // 1. explicit registration:
+    //    oa.template register_type<demo::DerivedFive>();
+    // 2. automatic registration:
+    //    demo::DerivedFive d5;
+    //    oa << make_nvp("lame", d5); // automatic registration
+    oa << make_nvp("shared", shared );
     oa << make_nvp("utm_primitive", utm_primitive);
     oa << make_nvp("utm_non_intrusive", utm_non_intrusive);
     oa << make_nvp("utm_serialize", utm_serialize);
@@ -194,6 +233,7 @@ void write_archive( std::ostream & out, unsigned int flags, size_t count)
   }
   
   std::cout << "# values written" << std::endl;
+  std::cout << "shared utm       : " << to_string(shared) << std::endl;
   std::cout << "utm primitive    : " << utm_primitive << std::endl;
   std::cout << "utm non-intrusive: " << utm_non_intrusive << std::endl;
   std::cout << "utm serialize    : " << utm_serialize << std::endl;
