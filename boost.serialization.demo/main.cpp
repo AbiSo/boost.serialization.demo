@@ -142,7 +142,7 @@ void read_archive( std::istream & in, unsigned int flags)
     //    Note: use 1. or 2. to be able to write the archive. Read won't work if not adjusted symmetrically.
     // 1. explicit registration:
     //    ia.template register_type<demo::DerivedFive>();
-    // 2. automatic registration:
+    // 2. "automatic" registration:
     //    demo::DerivedFive d5;
     //    ia >> make_nvp("lame", d5); // automatic registration
     ia >> make_nvp("shared", shared);
@@ -229,7 +229,10 @@ void write_archive( std::ostream & out, unsigned int flags, size_t count)
     oa << make_nvp("utm_split", utm_split);
     oa << make_nvp("observer", observer);
     oa << make_nvp("object", object);
+//#define DEMO_CAUSE_INPUT_ERROR
+#if !defined(DEMO_CAUSE_INPUT_STREAM_ERROR)
     oa << make_nvp("stalker", stalker);
+#endif
   }
   
   std::cout << "# values written" << std::endl;
@@ -284,8 +287,9 @@ try
   if ( !opt.Output.empty() ) write_archive( opt.Output, flags, opt.Binary, opt.Count );
   if ( !opt.Input.empty() ) read_archive( opt.Input, flags, opt.Binary );
 }
-catch( boost::archive::archive_exception & )
+catch( boost::archive::archive_exception & x )
 {
+  clog << "error: archive exception: " << x.what() << std::endl;
   return EXIT_FAILURE;
 }
 catch( std::exception & x)

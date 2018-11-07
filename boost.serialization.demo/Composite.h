@@ -17,7 +17,7 @@
 namespace demo {
 // --------------------------------------------------------------------------------------------------------------------
 
-constexpr const int CompositeVersion = 0;
+constexpr const int CompositeVersion = 1;
 
 class utm_serialize;
 class Base;

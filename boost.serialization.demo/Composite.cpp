@@ -80,7 +80,10 @@ void Composite::dump( std::ostream & os )
     os << "  shared   : " << mSharedData.get() << "#" << mSharedData.use_count() << ": " << *mSharedData << std::endl;
   else
     os << "  shared   : nullptr" << std::endl;
-  os << "  version 1: " << mVersionOne << std::endl;
+  if constexpr( CompositeVersion==1 )
+  {
+    os << "  version 1: " << mVersionOne << std::endl;
+  }
 }
 
 template<typename Archive>
@@ -105,15 +108,22 @@ void Composite::serialize(Archive & ar, [[maybe_unused]] const unsigned int vers
   // shared pointer to tracked object
   ar & make_nvp("shared", mSharedData );
   
-  // version one
-  if ( version == 1 )
+  if constexpr ( demo::CompositeVersion == 1 )
   {
-    ar & make_nvp("VersionOne", const_cast<bool&>(mVersionOne) );
+    // version one
+    if ( version == 1 )
+    {
+      ar & make_nvp("VersionOne", const_cast<bool&>(mVersionOne) );
+    }
+    else if ( Archive::is_loading::value )
+    {
+      const_cast<bool&>(mVersionOne) = false;
+    }
   }
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-#if 0
+
 template
 void Composite::serialize(boost::archive::xml_oarchive & ar, unsigned int version);
 template
@@ -123,7 +133,7 @@ template
 void Composite::serialize(boost::archive::binary_oarchive & ar, unsigned int version);
 template
 void Composite::serialize(boost::archive::binary_iarchive & ar, unsigned int version);
-#endif
+
 // --------------------------------------------------------------------------------------------------------------------
 } // demo
 // --------------------------------------------------------------------------------------------------------------------
