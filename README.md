@@ -29,4 +29,5 @@ Note: Requires C++17 to build.
 > cd Build
 > cmake ..
 > make -j
+> ./demo -h # get some help
 ````
